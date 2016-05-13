@@ -4,26 +4,26 @@
  */
 var socket = io();
 
-socket.on('connect',function () {
+socket.on('connect', function () {
     console.log('connected to socket.io server');
 });
 
 socket.on('message', function (message) {
     console.log("New Message");
     console.log(message.text);
-
-    jQuery('.messages').append('<p>'+ message.text+ '&nbsp&nbsp&nbsp&nbsp' + new Date() +'</p>');
+    var momentTimestamp = moment.utc(message.timestamp);
+    jQuery('.messages').append('<p><strong>'+momentTimestamp.local().format('MMM-Do-YYYY h:mm:ssa')+'</strong>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + message.text + '</p>');
 });
 
 //handles submitting of new message
 var $form = jQuery('#message-form');
 
-$form.on('submit',function (event) {
+$form.on('submit', function (event) {
     event.preventDefault();
 
     var $message = $form.find('input[name=message]');
 
-    socket.emit('message',{
+    socket.emit('message', {
         text: $message.val()
     });
     $message.val('');
