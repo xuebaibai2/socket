@@ -4,13 +4,17 @@
  */
 
 var name = getQueryVariable('name') || 'Anonymous';
-var room = getQueryVariable('room');
+var room = getQueryVariable('room') || 'Anonymous';
 var socket = io();
 
 console.log(name + ' wants to join ' + room);
 
 socket.on('connect', function () {
     console.log('connected to socket.io server');
+    socket.emit('joinRoom', {
+        name: name,
+        room: room
+    });
 });
 
 socket.on('message', function (message) {
@@ -27,6 +31,8 @@ socket.on('message', function (message) {
 //handles submitting of new message
 var $form = jQuery('#message-form');
 
+var $h1 = jQuery('h1');
+$h1.text("Chat room: " + room);
 $form.on('submit', function (event) {
     event.preventDefault();
 
